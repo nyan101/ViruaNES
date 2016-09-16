@@ -101,9 +101,9 @@ static	BOOL	bFileMatching[] = {
 
 /*
  *	Uncompress
- *	¿¿¿ ¿¿ bof¿ ¿¿
- *	IsRomFile , ROM::ROM ¿¿ ¿¿¿ 
- *	¿¿ ¿¿¿ ¿¿ ¿¿¿
+ *	ì˜œ? ì˜œ bof? ì˜œ
+ *	IsRomFile , ROM::ROM ì˜œ ì˜œ? 
+ *	ì˜œ ì˜œ? ì˜œ ì˜œ?
  */
 
 BOOL	Uncompress( LPCSTR fname, LPBYTE* ppBuf, LPDWORD lpdwSize )
@@ -113,10 +113,10 @@ INDIVIDUALINFO	idvinfo;
 
 	hDLL = NULL;
 	for( INT i = 0; pszArchiver[i]; i++ ) {
-		// DLLƒAƒ“ƒ[ƒh
+		// DLL?A?????[?h
 		FREEDLL( hDLL );
 
-		// DLLƒ[ƒh
+		// DLL???[?h
 		if( !(hDLL = LoadLibrary( pszArchiver[i] )) )
 			continue;
 
@@ -125,11 +125,11 @@ INDIVIDUALINFO	idvinfo;
 		CHECKARCHIVE	CheckArchive;
 		if( !(CheckArchive = (CHECKARCHIVE)GetProcAddress( hDLL, szTemp )) )
 			continue;
-		// ‘Î‰‚·‚éƒA[ƒJƒCƒu‚©ƒ`ƒFƒbƒN‚·‚é
+		// ?????????A?[?J?C?u???`?F?b?N????
 		if( !CheckArchive( fname, 1 ) )
 			continue;
 
-		// ƒA[ƒJƒCƒu“à‚É‘Î‰‚·‚éƒtƒ@ƒCƒ‹‚ª‚ ‚é‚©‚Ìƒ`ƒFƒbƒN
+		// ?A?[?J?C?u?????????????t?@?C?????????????`?F?b?N
 		OPENARCHIVE	OpenArchive;
 		CLOSEARCHIVE	CloseArchive;
 		FINDFIRST	FindFirst;
@@ -154,7 +154,7 @@ INDIVIDUALINFO	idvinfo;
 				bFound = TRUE;
 				break;
 			} else if( ret == -1 ) {	// Not found.
-			} else {			// ˆÙíI—¹
+			} else {			// ?????I??
 				break;
 			}
 		}
@@ -162,7 +162,7 @@ INDIVIDUALINFO	idvinfo;
 			continue;
 
 		if( !pszCommand[i] ) {
-		// ƒƒ‚ƒŠ‰ğ“€‚ ‚è(UNLHA32,UNZIP32)
+		// ??????????????(UNLHA32,UNZIP32)
 			*lpdwSize = idvinfo.dwOriginalSize;
 			*ppBuf = (LPBYTE)malloc( *lpdwSize );
 
@@ -176,7 +176,7 @@ INDIVIDUALINFO	idvinfo;
 				BYTE	szFile[FNAME_MAX32+1];
 				LPBYTE	lpF0, lpF1;
 
-				// ³‹K•\Œ»‚ğØ‚éƒIƒvƒVƒ‡ƒ“‚ª—~‚µ‚©‚Á‚½....
+				// ???K?\?????????I?v?V???????~????????....
 				lpF0 = (LPBYTE)idvinfo.szFileName;
 				lpF1 = szFile;
 				while( *lpF0 ) {
@@ -200,7 +200,7 @@ INDIVIDUALINFO	idvinfo;
 			if( ret == 0 )
 				return TRUE;
 		} else {
-		// ƒƒ‚ƒŠ‰ğ“€‚ª–³‚¢ê‡
+		// ????????????????????
 			CHAR	szCmd [256];
 			CHAR	szTempPath[_MAX_PATH];
 			EXECUTECOMMAND	ExecuteCommand;
@@ -217,32 +217,32 @@ INDIVIDUALINFO	idvinfo;
 
 			FILE *fp = NULL;
 			if( (fp = fopen( FileName.c_str(), "rb" )) ) {
-				// ƒtƒ@ƒCƒ‹ƒTƒCƒYæ“¾
+				// ?t?@?C???T?C?Y????
 				fseek( fp, 0, SEEK_END );
 				*lpdwSize = ftell( fp );
 				fseek( fp, 0, SEEK_SET );
 				if( *lpdwSize < 17 ) {
-					// ƒtƒ@ƒCƒ‹ƒTƒCƒY‚ª¬‚³‚·‚¬‚Ü‚·
+					// ?t?@?C???T?C?Y??????????????
 					throw	CApp::GetErrorString( IDS_ERROR_SMALLFILE );
 				}
 
-				// ƒeƒ“ƒ|ƒ‰ƒŠƒƒ‚ƒŠŠm•Û
+				// ?e???|???????????m??
 				if( !(*ppBuf = (LPBYTE)malloc( *lpdwSize )) ) {
 					FCLOSE( fp );
-					// ƒƒ‚ƒŠ‚ğŠm•Ûo—ˆ‚Ü‚¹‚ñ
+					// ?????????m???o????????
 					throw	CApp::GetErrorString( IDS_ERROR_OUTOFMEMORY );
 				}
-				// ƒTƒCƒY•ª“Ç‚İ‚İ
+				// ?T?C?Y??????????
 				if( fread( *ppBuf, *lpdwSize, 1, fp ) != 1 ) {
 					FCLOSE( fp );
 					FREE( *ppBuf );
-					// ƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ‚É¸”s‚µ‚Ü‚µ‚½
+					// ?t?@?C?????????????????s????????
 					throw	CApp::GetErrorString( IDS_ERROR_READ );
 				}
 				FCLOSE( fp );
 				DeleteFile( FileName.c_str() );
 			} else {
-				// xxx ƒtƒ@ƒCƒ‹‚ğŠJ‚¯‚Ü‚¹‚ñ
+				// xxx ?t?@?C?????J????????
 				LPCSTR	szErrStr = CApp::GetErrorString( IDS_ERROR_OPEN );
 				sprintf( szErrorString, szErrStr, fname );
 				throw	szErrorString;
@@ -257,10 +257,10 @@ INDIVIDUALINFO	idvinfo;
 // Archive
 
 //
-// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+// ?R???X?g???N?^
 //
-// ¿¿¿¿ ¿¿
-// ROM¿ ¿¿¿¿ ¿¿¿¿¿¿ ¿¿¿¿¿¿¿ ¿¿ ¿.
+// ì˜œì˜œ ì˜œ
+// ROM? ì˜œì˜œ ì˜œì˜œì˜œ ì˜œì˜œì˜œ? ì˜œ ?.
 ROM::ROM( const char* fname )
 {
 FILE	*fp = NULL;
@@ -287,66 +287,66 @@ LONG	FileSize;
 #endif
 	try {
 		if( !(fp = ::fopen( fname, "rb" )) ) {
-			// xxx ƒtƒ@ƒCƒ‹‚ğŠJ‚¯‚Ü‚¹‚ñ
+			// xxx ?t?@?C?????J????????
 			LPCSTR	szErrStr = CApp::GetErrorString( IDS_ERROR_OPEN );
 			::wsprintf( szErrorString, szErrStr, fname );
 			throw	szErrorString;
 		}
 
-		// ƒtƒ@ƒCƒ‹ƒTƒCƒYæ“¾
-		// ¿¿ ¿¿¿
+		// ?t?@?C???T?C?Y????
+		// ì˜œ ì˜œ?
 		::fseek( fp, 0, SEEK_END );
 		FileSize = ::ftell( fp );
 		::fseek( fp, 0, SEEK_SET );
 		
-		// ƒtƒ@ƒCƒ‹ƒTƒCƒYƒ`ƒFƒbƒN(NESƒwƒbƒ_+1ƒoƒCƒgˆÈã‚©H)
-		// ¿¿ ¿¿
+		// ?t?@?C???T?C?Y?`?F?b?N(NES?w?b?_+1?o?C?g???????H)
+		// ì˜œ ì˜œ
 		if( FileSize < 17 ) {
-			// ƒtƒ@ƒCƒ‹ƒTƒCƒY‚ª¬‚³‚·‚¬‚Ü‚·
+			// ?t?@?C???T?C?Y??????????????
 			throw	CApp::GetErrorString( IDS_ERROR_SMALLFILE );
 		}
 
-		// ƒeƒ“ƒ|ƒ‰ƒŠƒƒ‚ƒŠŠm•Û
-		// ¿¿¿¿ temp ¿¿
+		// ?e???|???????????m??
+		// ì˜œì˜œ temp ì˜œ
 		if( !(temp = (LPBYTE)::malloc( FileSize )) ) {
-			// ƒƒ‚ƒŠ‚ğŠm•Ûo—ˆ‚Ü‚¹‚ñ
+			// ?????????m???o????????
 			throw	CApp::GetErrorString( IDS_ERROR_OUTOFMEMORY );
 		}
 
-		// ƒTƒCƒY•ª“Ç‚İ‚İ
-		// ROM ¿¿¿
+		// ?T?C?Y??????????
+		// ROM ì˜œ?
 		if( ::fread( temp, FileSize, 1, fp ) != 1 ) {
-			// ƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ‚É¸”s‚µ‚Ü‚µ‚½
+			// ?t?@?C?????????????????s????????
 			throw	CApp::GetErrorString( IDS_ERROR_READ );
 		}
 
 		FCLOSE( fp );
 
-		// ƒwƒbƒ_ƒRƒs[
-		// Header ¿¿
+		// ?w?b?_?R?s?[
+		// Header ì˜œ
 		::memcpy( &header, temp, sizeof(NESHEADER) );
 
 		if( header.ID[0] == 'N' && header.ID[1] == 'E'
 		 && header.ID[2] == 'S' && header.ID[3] == 0x1A ) {
-			// ƒwƒbƒ_ƒRƒs[
+			// ?w?b?_?R?s?[
 			memcpy( &header, temp, sizeof(NESHEADER) );
 		} else if( header.ID[0] == 'F' && header.ID[1] == 'D'
 			&& header.ID[2] == 'S' && header.ID[3] == 0x1A ) {
-			// ƒwƒbƒ_ƒRƒs[
+			// ?w?b?_?R?s?[
 			memcpy( &header, temp, sizeof(NESHEADER) );
 		} else if( header.ID[0] == 'N' && header.ID[1] == 'E'
 			&& header.ID[2] == 'S' && header.ID[3] == 'M') {
-			// ƒwƒbƒ_ƒRƒs[
+			// ?w?b?_?R?s?[
 			memcpy( &header, temp, sizeof(NESHEADER) );
 		} else {
 			FREE( temp );
 
-			/* ¿¿¿ Uncompress */
+			/* ì˜œ? Uncompress */
 			if( !Uncompress( fname, &temp, (LPDWORD)&FileSize ) ) {
-				// –¢‘Î‰Œ`®‚Å‚·
+				// ???????`??????
 				throw	CApp::GetErrorString( IDS_ERROR_UNSUPPORTFORMAT );
 			}
-			// ƒwƒbƒ_ƒRƒs[
+			// ?w?b?_?R?s?[
 			memcpy( &header, temp, sizeof(NESHEADER) );
 		}
 
@@ -355,8 +355,8 @@ LONG	FileSize;
 
 		if( header.ID[0] == 'N' && header.ID[1] == 'E'
 		 && header.ID[2] == 'S' && header.ID[3] == 0x1A ) {
-		// •’Ê‚ÌNESƒtƒ@ƒCƒ‹
-		// PRG CHR ¿¿¿ ¿¿¿
+		// ??????NES?t?@?C??
+		// PRG CHR ì˜œ? ì˜œ?
 			PRGsize = (LONG)header.PRG_PAGE_SIZE*0x4000;
 			CHRsize = (LONG)header.CHR_PAGE_SIZE*0x2000;
 			PRGoffset = sizeof(NESHEADER);
@@ -368,13 +368,13 @@ LONG	FileSize;
 			}
 
 			if( PRGsize <= 0 ) {
-				// NESƒwƒbƒ_‚ªˆÙí‚Å‚·
+				// NES?w?b?_??????????
 				throw	CApp::GetErrorString( IDS_ERROR_INVALIDNESHEADER );
 			}
 
 			// PRG BANK
 			if( !(lpPRG = (LPBYTE)malloc( PRGsize )) ) {
-				// ƒƒ‚ƒŠ‚ğŠm•Ûo—ˆ‚Ü‚¹‚ñ
+				// ?????????m???o????????
 				throw	CApp::GetErrorString( IDS_ERROR_OUTOFMEMORY );
 			}
 
@@ -383,14 +383,14 @@ LONG	FileSize;
 			// CHR BANK
 			if( CHRsize > 0 ) {
 				if( !(lpCHR = (LPBYTE)malloc( CHRsize )) ) {
-					// ƒƒ‚ƒŠ‚ğŠm•Ûo—ˆ‚Ü‚¹‚ñ
+					// ?????????m???o????????
 					throw	CApp::GetErrorString( IDS_ERROR_OUTOFMEMORY );
 				}
 
 				if( FileSize >= CHRoffset+CHRsize ) {
 					memcpy( lpCHR, temp+CHRoffset, CHRsize );
 				} else {
-					// CHRƒoƒ“ƒN­‚È‚¢c
+					// CHR?o???N???????c
 					CHRsize	-= (CHRoffset+CHRsize - FileSize);
 					memcpy( lpCHR, temp+CHRoffset, CHRsize );
 				}
@@ -401,7 +401,7 @@ LONG	FileSize;
 			// Trainer
 			if( IsTRAINER() ) {
 				if( !(lpTrainer = (LPBYTE)malloc( 512 )) ) {
-					// ƒƒ‚ƒŠ‚ğŠm•Ûo—ˆ‚Ü‚¹‚ñ
+					// ?????????m???o????????
 					throw	CApp::GetErrorString( IDS_ERROR_OUTOFMEMORY );
 				}
 
@@ -413,7 +413,7 @@ LONG	FileSize;
 			// For dis....
 #ifdef	_DATATRACE
 			if( !(PROM_ACCESS = (LPBYTE)malloc( PRGsize )) ) {
-				// ƒƒ‚ƒŠ‚ğŠm•Ûo—ˆ‚Ü‚¹‚ñ
+				// ?????????m???o????????
 				throw	CApp::GetErrorString( IDS_ERROR_OUTOFMEMORY );
 			}
 			ZeroMemory( PROM_ACCESS, PRGsize );
@@ -421,21 +421,21 @@ LONG	FileSize;
 		} else if( header.ID[0] == 'F' && header.ID[1] == 'D'
 			&& header.ID[2] == 'S' && header.ID[3] == 0x1A ) {
 		// FDS(Nintendo Disk System)
-			// ƒfƒBƒXƒNƒTƒCƒY
+			// ?f?B?X?N?T?C?Y
 			diskno = header.PRG_PAGE_SIZE;
 
 			if( FileSize < (16+65500*diskno) ) {
-				// ƒfƒBƒXƒNƒTƒCƒY‚ªˆÙí‚Å‚·
+				// ?f?B?X?N?T?C?Y??????????
 				throw	CApp::GetErrorString( IDS_ERROR_ILLEGALDISKSIZE );
 			}
 			if( diskno > 4 ) {
-				// 4–Ê‚æ‚è‘½‚¢ƒfƒBƒXƒN‚Í‘Î‰‚µ‚Ä‚¢‚Ü‚¹‚ñ
+				// 4???????????f?B?X?N??????????????????
 				throw	CApp::GetErrorString( IDS_ERROR_UNSUPPORTDISK );
 			}
 
 			ZeroMemory( &header, sizeof(NESHEADER) );
 
-			// ƒ_ƒ~[ƒwƒbƒ_‚ğì‚é
+			// ?_?~?[?w?b?_??????
 			header.ID[0] = 'N';
 			header.ID[1] = 'E';
 			header.ID[2] = 'S';
@@ -448,12 +448,12 @@ LONG	FileSize;
 			PRGsize = sizeof(NESHEADER)+65500*(LONG)diskno;
 			// PRG BANK
 			if( !(lpPRG = (LPBYTE)malloc( PRGsize )) ) {
-				// ƒƒ‚ƒŠ‚ğŠm•Ûo—ˆ‚Ü‚¹‚ñ
+				// ?????????m???o????????
 				throw	CApp::GetErrorString( IDS_ERROR_OUTOFMEMORY );
 			}
-			// ƒf[ƒ^‚ÌƒoƒbƒNƒAƒbƒv—p
+			// ?f?[?^???o?b?N?A?b?v?p
 			if( !(lpDisk = (LPBYTE)malloc( PRGsize )) ) {
-				// ƒƒ‚ƒŠ‚ğŠm•Ûo—ˆ‚Ü‚¹‚ñ
+				// ?????????m???o????????
 				throw	CApp::GetErrorString( IDS_ERROR_OUTOFMEMORY );
 			}
 			// CHR BANK
@@ -461,7 +461,7 @@ LONG	FileSize;
 
 			memcpy( lpPRG, &header, sizeof(NESHEADER) );
 			memcpy( lpPRG+sizeof(NESHEADER), temp+sizeof(NESHEADER), PRGsize-sizeof(NESHEADER) );
-			// ƒf[ƒ^‚Ì‘‚«Š·‚¦êŠ“Á’è—p
+			// ?f?[?^???????????????????p
 			::ZeroMemory( lpDisk, PRGsize );
 //			memcpy( lpDisk, &header, sizeof(NESHEADER) );
 //			memcpy( lpDisk+sizeof(NESHEADER), temp+sizeof(NESHEADER), PRGsize-sizeof(NESHEADER) );
@@ -472,11 +472,11 @@ LONG	FileSize;
 			lpPRG[3] = 0x1A;
 			lpPRG[4] = (BYTE)diskno;
 
-			// DISKSYSTEM BIOS‚Ìƒ[ƒh
+			// DISKSYSTEM BIOS?????[?h
 			string	Path = CPathlib::MakePathExt( CApp::GetModulePath(), "DISKSYS", "ROM" );
 
 			if( !(fp = fopen( Path.c_str(), "rb" )) ) {
-				// DISKSYS.ROM‚ª‚ ‚è‚Ü‚¹‚ñ
+				// DISKSYS.ROM????????????
 				throw	CApp::GetErrorString( IDS_ERROR_NODISKBIOS );
 			}
 
@@ -484,29 +484,29 @@ LONG	FileSize;
 			FileSize = ftell( fp );
 			fseek( fp, 0, SEEK_SET );
 			if( FileSize < 17 ) {
-				// ƒtƒ@ƒCƒ‹ƒTƒCƒY‚ª¬‚³‚·‚¬‚Ü‚·
+				// ?t?@?C???T?C?Y??????????????
 				throw	CApp::GetErrorString( IDS_ERROR_SMALLFILE );
 			}
 			if( !(bios = (LPBYTE)malloc( FileSize )) ) {
-				// ƒƒ‚ƒŠ‚ğŠm•Ûo—ˆ‚Ü‚¹‚ñ
+				// ?????????m???o????????
 				throw	CApp::GetErrorString( IDS_ERROR_OUTOFMEMORY );
 			}
 			if( fread( bios, FileSize, 1, fp ) != 1 ) {
-				// ƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ‚É¸”s‚µ‚Ü‚µ‚½
+				// ?t?@?C?????????????????s????????
 				throw	CApp::GetErrorString( IDS_ERROR_READ );
 			}
 			FCLOSE( fp );
 
 			if( !(lpDiskBios = (LPBYTE)malloc( 8*1024 )) ) {
-				// ƒƒ‚ƒŠ‚ğŠm•Ûo—ˆ‚Ü‚¹‚ñ
+				// ?????????m???o????????
 				throw	CApp::GetErrorString( IDS_ERROR_OUTOFMEMORY );
 			}
 
 			if( bios[0] == 'N' && bios[1] == 'E' && bios[2] == 'S' && bios[3] == 0x1A ) {
-			// NESŒ`®BIOS
+			// NES?`??BIOS
 				memcpy( lpDiskBios, bios+0x6010, 8*1024 );
 			} else {
-			// ¶BIOS
+			// ??BIOS
 				memcpy( lpDiskBios, bios, 8*1024 );
 			}
 			FREE( bios );
@@ -516,13 +516,13 @@ LONG	FileSize;
 			bNSF = TRUE;
 			ZeroMemory( &header, sizeof(NESHEADER) );
 
-			// ƒwƒbƒ_ƒRƒs[
+			// ?w?b?_?R?s?[
 			memcpy( &nsfheader, temp, sizeof(NSFHEADER) );
 
 			PRGsize = FileSize-sizeof(NSFHEADER);
 			PRGsize = (PRGsize+0x0FFF)&~0x0FFF;
 			if( !(lpPRG = (LPBYTE)malloc( PRGsize )) ) {
-				// ƒƒ‚ƒŠ‚ğŠm•Ûo—ˆ‚Ü‚¹‚ñ
+				// ?????????m???o????????
 				throw	CApp::GetErrorString( IDS_ERROR_OUTOFMEMORY );
 				throw	szErrorString;
 			}
@@ -531,11 +531,11 @@ LONG	FileSize;
 
 			NSF_PAGE_SIZE = PRGsize>>12;
 		} else {
-			// –¢‘Î‰Œ`®‚Å‚·
+			// ???????`??????
 			throw	CApp::GetErrorString( IDS_ERROR_UNSUPPORTFORMAT );
 		}
 
-		// ƒpƒX/ƒtƒ@ƒCƒ‹–¼æ“¾
+		// ?p?X/?t?@?C????????
 		{
 		string	tempstr;
 		tempstr = CPathlib::SplitPath( fname );
@@ -544,12 +544,12 @@ LONG	FileSize;
 		::strcpy( name, tempstr.c_str() );
 		}
 
-		// ƒ}ƒbƒpİ’è
+		// ?}?b?p????
 		if( !bNSF ) {
 			mapper = (header.control1>>4)|(header.control2&0xF0);
 
 			if( mapper != 20 ) {
-				// PRG crc‚ÌŒvZ(NesToy‚ÌPRG CRC‚Æ“¯‚¶)
+				// PRG crc???v?Z(NesToy??PRG CRC??????)
 				if( IsTRAINER() ) {
 					crcall = CRC::CrcRev( 512+PRGsize+CHRsize, temp+sizeof(NESHEADER) );
 					crc    = CRC::CrcRev( 512+PRGsize, temp+sizeof(NESHEADER) );
@@ -577,7 +577,7 @@ LONG	FileSize;
 
 		FREE( temp );
 	} catch( CHAR* str ) {
-		// Œ´ˆö‚ª‚í‚©‚Á‚Ä‚¢‚éƒGƒ‰[ˆ—
+		// ???????????????????G???[????
 		FCLOSE( fp );
 		FREE( temp );
 		FREE( bios );
@@ -596,7 +596,7 @@ LONG	FileSize;
 		throw	str;
 #ifndef	_DEBUG
 	} catch(...) {
-		// ˆê”Ê•ÛŒìƒGƒ‰[‚Æ‚©o‚µ‚½‚­–³‚¢‚Ì‚Å...(^^;
+		// ?????????G???[?????o??????????????...(^^;
 		FCLOSE( fp );
 		FREE( temp );
 		FREE( bios );
@@ -612,14 +612,14 @@ LONG	FileSize;
 		FREE( PROM_ACCESS );
 #endif
 
-		// •s–¾‚ÈƒGƒ‰[‚ª”­¶‚µ‚Ü‚µ‚½
+		// ?s?????G???[??????????????
 		throw	CApp::GetErrorString( IDS_ERROR_UNKNOWN );
 #endif	// !_DEBUG
 	}
 }
 
 //
-// ƒfƒXƒgƒ‰ƒNƒ^
+// ?f?X?g???N?^
 //
 ROM::~ROM()
 {
@@ -631,7 +631,7 @@ ROM::~ROM()
 
 #ifdef	_DATATRACE
 // _DATATRACE
-// ‚â‚Á‚Â‚¯d–i‚¨
+// ?????????d???i??
 
 	if( PROM_ACCESS ) {
 		string	temp, path, path2;
@@ -713,10 +713,10 @@ ROM::~ROM()
 }
 
 //
-// ROMƒtƒ@ƒCƒ‹ƒ`ƒFƒbƒN
+// ROM?t?@?C???`?F?b?N
 //
-// ¿¿¿¿¿ ¿¿ ( ¿¿¿¿ : NES\x1a )
-// ¿¿¿¿¿ Uncompress ¿¿¿¿ ¿¿ ( Bof¿ ¿¿ ¿¿ )
+// ì˜œì˜œ? ì˜œ ( ì˜œì˜œ : NES\x1a )
+// ì˜œì˜œ? Uncompress ì˜œì˜œ ì˜œ ( Bof? ì˜œ ì˜œ )
 BOOL	ROM::IsRomFile( const char* fname )
 {
 FILE*	fp = NULL;
@@ -725,7 +725,7 @@ NESHEADER	header;
 	if( !(fp = fopen( fname, "rb" )) )
 		return	FALSE;
 
-	// ƒTƒCƒY•ª“Ç‚İ‚İ
+	// ?T?C?Y??????????
 	if( fread( &header, sizeof(header), 1, fp ) != 1 ) {
 		FCLOSE( fp );
 		return	FALSE;
@@ -774,22 +774,22 @@ INT	ROMDATABASE::HeaderCheck( NESHEADER& hdr, DWORD crcall, DWORD crc, ROMDB& da
 	}
 
 	if( m_DataBaseList.empty() )
-		return	-2;	// ƒf[ƒ^ƒx[ƒX‚ª–³‚¢
+		return	-2;	// ?f?[?^?x?[?X??????
 
 	for( list<ROMDB>::iterator it = m_DataBaseList.begin(); it != m_DataBaseList.end(); ) {
 		if( it->crcall == crcall || (it->crc == crc && it->crc) ) {
 			data = *it;
 			if( hdr.control1 == it->control1 && hdr.control2 == it->control2 ) {
-				return	0;	// “K‡
+				return	0;	// ?K??
 			} else {
-				return	1;	// CRC‚Íˆê’v‚µ‚½‚ªƒwƒbƒ_‚ªˆá‚¤
+				return	1;	// CRC?????v???????w?b?_??????
 			}
 			return	TRUE;
 		}
 		it++;
 	}
 
-	return	-1;	// ƒf[ƒ^ƒx[ƒX‚É“K‡‚µ‚È‚¢
+	return	-1;	// ?f?[?^?x?[?X???K????????
 }
 
 BOOL	ROMDATABASE::HeaderCorrect( NESHEADER& hdr, DWORD crcall, DWORD crc )
@@ -820,7 +820,7 @@ void	ROMDATABASE::LoadDatabase()
 {
 FILE*	fp = NULL;
 CHAR	buf[512];
-const UCHAR seps[] = ";\n\0";	// ƒZƒpƒŒ[ƒ^
+const UCHAR seps[] = ";\n\0";	// ?Z?p???[?^
 ROMDB	db;
 
 DEBUGOUT( "Database loading...\n" );
@@ -833,7 +833,7 @@ DEBUGOUT( "File:%s\n", Path.c_str() );
 
 	if( (fp = fopen( Path.c_str(), "r" )) ) {
 		while( fgets( buf, 512, fp ) ) {
-			if( buf[0] == ';' ) {	// ƒRƒƒ“ƒgƒtƒB[ƒ‹ƒh‚Æ‚İ‚È‚·
+			if( buf[0] == ';' ) {	// ?R?????g?t?B?[???h????????
 				continue;
 			}
 

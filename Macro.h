@@ -1,10 +1,10 @@
 //
-// •Ö—˜‚©‚à’m‚ê‚È‚¢ƒ}ƒNƒ‚½‚¿
+// ä¾¿åˆ©ã‹ã‚‚çŸ¥ã‚Œãªã„ãƒã‚¯ãƒ­ãŸã¡
 //
 #ifndef	__MACRO_INCLUDED__
 #define	__MACRO_INCLUDED__
 
-// ‘½dŒÄ‚Ño‚µ‘Î‰ƒ}ƒNƒ‚¿‚á‚ñ
+// å¤šé‡å‘¼ã³å‡ºã—å¯¾å¿œãƒã‚¯ãƒ­ã¡ã‚ƒã‚“(ë‹¤ì¤‘ í˜¸ì¶œ ëŒ€ì‘ ë§¤í¬ë¡œ)
 #define	DELETEPTR(x)	if(x) { delete x; x = NULL; }
 #define	DELETEARR(x)	if(x) { delete[] x; x = NULL; }
 #define	RELEASE(x)	if(x) { x->Release(); x=NULL; }
@@ -13,8 +13,8 @@
 #define	GDIDELETE(x)	if(x) { ::DeleteObject(x); x=NULL; }
 #define	CLOSEHANDLE(x)	if(x) { ::CloseHandle(x); x = NULL; }
 
-// ‚»‚Ì‘¼
-// RECT\‘¢‘Ì—p
+// ãã®ä»–(ê¸°íƒ€)
+// RECTæ§‹é€ ä½“ç”¨(RECTêµ¬ì¡°ì²´ìš©)
 #define	RCWIDTH(rc)	((rc).right-(rc).left)
 #define	RCHEIGHT(rc)	((rc).bottom-(rc).top)
 

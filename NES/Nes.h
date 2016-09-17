@@ -22,7 +22,7 @@
 #include <vector>
 using namespace std;
 
-// ‹Ÿ‹‹ƒx[ƒXƒNƒƒbƒN/CPUƒNƒƒbƒN
+// ê³µê¸‰ ë² ì´ìŠ¤ í´ëŸ­/CPUí´ëŸ­
 #define	BASE_CLOCK		21477270
 #define	CPU_CLOCK		1789772.5f
 
@@ -44,7 +44,7 @@ using namespace std;
 
 #define	FRAMESYNC_CYCLES	(FRAME_CYCLES/48)
 
-// ƒtƒŒ[ƒ€ƒŒ[ƒg/‚PƒtƒŒ[ƒ€‚ÌÀŠÔ(ms)
+// í”„ë ˆì„ ë ˆì´íŠ¸ / 1 í”„ë ˆì„ ì˜ ì‹¤ì œ ì‹œê°„ (ms)
 #define	FRAME_RATE		60
 #define	FRAME_PERIOD		(1000.0f/(FLOAT)FRAME_RATE)
 
@@ -57,7 +57,7 @@ class	PAD;
 class	Mapper;
 
 //
-// NES ƒNƒ‰ƒX
+// NES í´ë˜ìŠ¤
 //
 class NES
 {
@@ -65,8 +65,8 @@ public:
 	NES( const char* fname );
 	virtual	~NES();
 
-// ƒƒ“ƒoŠÖ”
-	// ƒGƒ~ƒ…ƒŒ[ƒVƒ‡ƒ“
+// ë©¤ë²„ í•¨ìˆ˜
+	// ì—ë®¬ë ˆì´ì…˜
 	void	Reset();
 	void	SoftReset();
 
@@ -91,7 +91,7 @@ public:
 	void	GetZapperPos( LONG&x, LONG&y )	{ x = ZapperX; y = ZapperY; }
 	void	SetZapperPos( LONG x, LONG y )	{ ZapperX = x; ZapperY = y; }
 
-	// ƒXƒe[ƒgƒtƒ@ƒCƒ‹
+	// ìƒíƒœ íŒŒì¼
 	static	BOOL	IsStateFile( const char* fname );
 	BOOL	LoadState( const char* fname );
 	BOOL	SaveState( const char* fname );
@@ -99,7 +99,7 @@ public:
 	INT	GetSAVERAM_SIZE()		{ return SAVERAM_SIZE; }
 	void	SetSAVERAM_SIZE( INT size )	{ SAVERAM_SIZE = size; }
 
-	// ƒXƒiƒbƒvƒVƒ‡ƒbƒg
+	// ìŠ¤ëƒ…ìƒ·
 	BOOL	Snapshot();
 
 	// For Movie
@@ -112,22 +112,22 @@ public:
 	BOOL	MovieRecAppend( const char* fname );
 	BOOL	MovieStop();
 
-	// ‚»‚Ì‘¼ƒRƒ“ƒgƒ[ƒ‹
+	// ê¸°íƒ€ ì»¨íŠ¸ë¡¤
 	BOOL	IsDiskThrottle() { return m_bDiskThrottle; }
 //	BOOL	IsBraking() { return m_bBrake; }	// Debugger
 
-	// •`‰æ•û®
+	// æç”»æ–¹å¼?
 	enum RENDERMETHOD { 
-		POST_ALL_RENDER = 0, // ƒXƒLƒƒƒ“ƒ‰ƒCƒ“•ª‚Ì–½—ßÀsŒãCƒŒƒ“ƒ_ƒŠƒ“ƒO
-		PRE_ALL_RENDER  = 1, // ƒŒƒ“ƒ_ƒŠƒ“ƒO‚ÌÀsŒãCƒXƒLƒƒƒ“ƒ‰ƒCƒ“•ª‚Ì–½—ßÀs
-		POST_RENDER     = 2, // •\¦ŠúŠÔ•ª‚Ì–½—ßÀsŒãCƒŒƒ“ƒ_ƒŠƒ“ƒO
-		PRE_RENDER      = 3, // ƒŒƒ“ƒ_ƒŠƒ“ƒOÀsŒãC•\¦ŠúŠÔ•ª‚Ì–½—ßÀs
-		TILE_RENDER     = 4  // ƒ^ƒCƒ‹ƒx[ƒXƒŒƒ“ƒ_ƒŠƒ“ƒO
+		POST_ALL_RENDER = 0, // ìŠ¤ìº” ë¼ì¸(ë¶„)ì˜ ëª…ë ¹ ì‹¤í–‰ í›„ ë Œë”ë§
+		PRE_ALL_RENDER  = 1, // ë Œë”ë§ì„ ì‹¤í–‰í•œ í›„ ìŠ¤ìº” ë¼ì¸ ëª…ë ¹(ë¶„)ì‹¤í–‰
+		POST_RENDER     = 2, // í‘œì‹œ ì‹œê°„(ë¶„) ëª…ë ¹ ì‹¤í–‰ í›„ ë Œë”ë§
+		PRE_RENDER      = 3, // ë Œë”ë§ ì‹¤í–‰í›„ í‘œì‹œ ì‹œê°„(ë¶„) ëª…ë ¹ ì‹¤í–‰
+		TILE_RENDER     = 4  // íƒ€ì¼ ê¸°ë°˜ ë Œë”ë§
 	};
 	void		SetRenderMethod( RENDERMETHOD type )	{ RenderMethod = type; }
 	RENDERMETHOD	GetRenderMethod()			{ return RenderMethod; }
 
-	// ƒRƒ}ƒ“ƒh
+	// ëª…ë ¹
 	enum NESCOMMAND {
 		NESCMD_NONE = 0,
 		NESCMD_HWRESET,
@@ -175,7 +175,7 @@ public:
 	void	GenieCodeProcess();
 
 public:
-// ƒƒ“ƒo•Ï”
+// ë©¤ë²„ ë³€ìˆ˜
 	CPU*	cpu;
 	PPU*	ppu;
 	APU*	apu;
@@ -184,12 +184,12 @@ public:
 	Mapper*	mapper;
 
 protected:
-// ƒƒ“ƒoŠÖ”
-	// ƒGƒ~ƒ…ƒŒ[ƒVƒ‡ƒ“
+// ë©¤ë²„ í•¨ìˆ˜
+	// ì—ë®¬ë ˆì´ì…˜
 	BYTE	ReadReg ( WORD addr );
 	void	WriteReg( WORD addr, BYTE data );
 
-	// ƒXƒe[ƒgƒTƒu
+	// ìŠ¤í…Œì´íŠ¸ ì„œë¸Œ
 	BOOL	ReadState( FILE* fp );
 	void	WriteState( FILE* fp );
 
@@ -200,7 +200,7 @@ protected:
 	void	SaveDISK();
 
 protected:
-// ƒƒ“ƒo•Ï”
+// ë©¤ë²„ ë³€ìˆ˜
 	BOOL	bZapper;
 	LONG	ZapperX, ZapperY;
 

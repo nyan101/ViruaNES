@@ -122,8 +122,8 @@ NES::NES( const char* fname )	//NES 생성자 각종 변수 초기화 및 하드
 		else		       DEBUGOUT( "No\n" );
 
 		NesSub_MemoryInitial();			// 전체 메모리랑 레지스터 초기화 함수.(mmu.cpp참고)
-		LoadSRAM();				//
-		LoadDISK();				//
+		LoadSRAM();				
+		LoadDISK();				
 
 		Reset();
 	} catch( CHAR* str ) {		// DELETERPTR => 메모리 할당 취소 시키고 NULL값을 넣음.
@@ -151,14 +151,14 @@ NES::NES( const char* fname )	//NES 생성자 각종 변수 초기화 및 하드
 	DEBUGOUT( "Starting emulation!\n" );
 }
 
-NES::~NES()
+NES::~NES()	//소멸자
 {
 	MovieStop();
 
 	SaveSRAM();
 	SaveDISK();
 
-	DEBUGOUT( "Free NES..." );
+	DEBUGOUT( "Free NES..." );	// Free NES...
 
 	DELETEPTR( cpu );
 	DELETEPTR( ppu );
@@ -170,7 +170,8 @@ NES::~NES()
 	DEBUGOUT( "Ok.\n" );
 }
 
-// Reset 함수
+// Reset 함수 => crc가져옴, ZeroMemory을 이용해 초기화.
+
 void	NES::Reset()
 {
 	SaveSRAM();
@@ -178,13 +179,13 @@ void	NES::Reset()
 
 	// RAM Clear
 	::ZeroMemory( RAM,    8*1024 );
-	if( rom->GetPROM_CRC() == 0x29401686 ) {	// Minna no Taabou no Nakayoshi Dai Sakusen(J)
+	if( rom->GetPROM_CRC() == 0x29401686 ) {	// crc 가져옴
 		::memset( RAM, 0xFF, sizeof(RAM) );
 	}
 //	::memset( RAM, 0x55, sizeof(RAM) );
 //	::ZeroMemory( XRAM,   8*1024 );
-	::ZeroMemory( CRAM,  32*1024 );		// CRAM 0으로 초기화
-	::ZeroMemory( VRAM,   4*1024 );		
+	::ZeroMemory( CRAM,  32*1024 );		// ZeroMemory(크기만큼 0으로 set)
+	::ZeroMemory( VRAM,   4*1024 );		// ZeroMemory(크기만큼 0으로 set)
 
 	::ZeroMemory( SPRAM, 0x100 );
 	::ZeroMemory( BGPAL, 0x10 );
@@ -196,7 +197,7 @@ void	NES::Reset()
 	bFrameIRQ = TRUE;
 	bFrameIRQ_occur = FALSE;
 	FrameIRQ = 0xC0;
-	FrameIRQ_cycles = FRAMEIRQ_CYCLES;
+	FrameIRQ_cycles = FRAMEIRQ_CYCLES;	// #define	FRAMEIRQ_CYCLES	29828 참고
 
 	m_bDiskThrottle = FALSE;
 
@@ -205,7 +206,7 @@ void	NES::Reset()
 	PROM = rom->GetPROM();
 	VROM = rom->GetVROM();
 
-	PROM_8K_SIZE  = rom->GetPROM_SIZE()*2;
+	PROM_8K_SIZE  = rom->GetPROM_SIZE()*2;		// size set
 	PROM_16K_SIZE = rom->GetPROM_SIZE();
 	PROM_32K_SIZE = rom->GetPROM_SIZE()/2;
 
@@ -214,7 +215,7 @@ void	NES::Reset()
 	VROM_4K_SIZE = rom->GetVROM_SIZE()*2;
 	VROM_8K_SIZE = rom->GetVROM_SIZE();
 
-	// デフォルトバンク
+	// 디폴트 뱅크
 	if( VROM_8K_SIZE ) {
 		SetVROM_8K_Bank( 0 );
 	} else {
@@ -222,7 +223,7 @@ void	NES::Reset()
 	}
 
 	// ?ラ?
-	if( rom->Is4SCREEN() ) {
+	if( rom->Is4SCREEN() ) {				// 미러?..
 		SetVRAM_Mirror( VRAM_MIRROR4 );
 	} else if( rom->IsVMIRROR() ) {
 		SetVRAM_Mirror( VRAM_VMIRROR );
@@ -256,14 +257,14 @@ void	NES::SoftReset()
 
 	bFrameIRQ_occur = FALSE;
 	FrameIRQ = 0xC0;
-	FrameIRQ_cycles = FRAMEIRQ_CYCLES;
+	FrameIRQ_cycles = FRAMEIRQ_CYCLES;	// #define	FRAMEIRQ_CYCLES	29828 참고
 
 	m_bDiskThrottle = FALSE;
 
 	base_cycles = emul_cycles = 0;
 }
 
-void	NES::EmulationCPU( INT basecycles )
+void	NES::EmulationCPU( INT basecycles )			// EmulationCPU =>
 {
 INT	cycles;
 
@@ -296,11 +297,11 @@ INT	scanline = 0;
 	if( RenderMethod != TILE_RENDER ) {
 		bZapper = FALSE;
 		while( TRUE ) {
-			ppu->SetRenderScanline( scanline );
+			ppu->SetRenderScanline( scanline );			//scanline setting
 
 			if( scanline == 0 ) {
-			// ???スキャンライン
-				if( RenderMethod < POST_RENDER ) {
+			// 스캔라인 
+				if( RenderMethod < POST_RENDER ) {		// Nes.h 참고 , POST_RENDER(표시 시간(분) 명령 실행 후 렌더링)
 					EmulationCPU( SCANLINE_CYCLES );
 					ppu->FrameStart();
 					ppu->ScanlineNext();
@@ -310,7 +311,7 @@ INT	scanline = 0;
 					EmulationCPU( HDRAW_CYCLES );
 					ppu->FrameStart();
 					ppu->ScanlineNext();
-					mapper->HSync( scanline );
+					mapper->HSync( scanline );		// H sync/V sync/Clock sync
 					EmulationCPU( FETCH_CYCLES*32 );
 					ppu->ScanlineStart();
 					EmulationCPU( FETCH_CYCLES*10+SCANLINE_END_CYCLES );
@@ -526,12 +527,12 @@ INT	scanline = 0;
 	}
 }
 
-void	NES::Clock( INT cycles )
+void	NES::Clock( INT cycles )	//clock 부분
 {
 	if( (FrameIRQ_cycles-=cycles) < 0 ) {
-		FrameIRQ_cycles += FRAMEIRQ_CYCLES;
+		FrameIRQ_cycles += FRAMEIRQ_CYCLES;		// #define	FRAMEIRQ_CYCLES	29828 참고
 		bFrameIRQ_occur = TRUE;
-		// APU同期処理
+		// APU동기화
 		apu->Sync();
 	}
 
@@ -542,7 +543,7 @@ void	NES::Clock( INT cycles )
 	}
 }
 
-BYTE	NES::Read( WORD addr )
+BYTE	NES::Read( WORD addr )		// 주소 매핑 시키는 부분 같은데?..
 {
 	switch( addr>>13 ) {
 		case	0x00:	// $0000-$1FFF
@@ -572,7 +573,7 @@ void	NES::Write( WORD addr, BYTE data )
 {
 	switch( addr>>13 ) {
 		case	0x00:	// $0000-$1FFF
-			RAM[addr&0x07FF] = data;
+			RAM[addr&0x07FF] = data;		//BYTE data 대입
 			break;
 		case	0x01:	// $2000-$3FFF
 			ppu->Write( addr&0xE007, data );
